@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>员工手册导航 · 云图知行</title>
+<style>
+  :root {
+    --brand: #4f7cff;
+    --brand2: #7c5cff;
+    --brand3: #b04fff;
+    --text: #1f2329;
+    --sub: #8a919f;
+    --line: #eef0f3;
+    --card: rgba(255,255,255,0.86);
+    --radius: 20px;
+    --shadow: 0 6px 24px rgba(80,90,160,0.10);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Helvetica Neue", sans-serif;
+    background: linear-gradient(180deg, #eef2ff 0%, #f7f9fc 26%, #f5f6f8 100%);
+    background-attachment: fixed;
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── 顶部品牌区 ── */
+  .header {
+    background: linear-gradient(135deg, #4f7cff 0%, #7c5cff 55%, #b04fff 100%);
+    color: #fff;
+    padding: 40px 24px 62px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header .blob { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.12); filter: blur(2px); }
+  .blob.b1 { width: 200px; height: 200px; right: -60px; top: -70px; }
+  .blob.b2 { width: 130px; height: 130px; left: -30px; bottom: -45px; background: rgba(255,255,255,0.08); }
+  .blob.b3 { width: 60px; height: 60px; right: 60px; bottom: -20px; background: rgba(255,255,255,0.10); }
+  .header .brand-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; letter-spacing: 1.5px; opacity: 0.9;
+    background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.22);
+    padding: 4px 12px; border-radius: 20px; margin-bottom: 14px;
+  }
+  .header h1 { font-size: 25px; font-weight: 800; letter-spacing: 0.5px; }
+  .header .sub { font-size: 13px; opacity: 0.92; margin-top: 8px; }
+
+  /* ── 搜索框 ── */
+  .search-wrap { margin: -30px 20px 0; position: relative; z-index: 3; }
+  .search-box {
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    display: flex; align-items: center;
+    padding: 0 16px; height: 54px;
+    border: 1px solid rgba(255,255,255,0.7);
+  }
+  .search-box .icon { font-size: 17px; margin-right: 10px; }
+  .search-box input {
+    border: none; outline: none; flex: 1; font-size: 15px; color: var(--text); background: transparent;
+  }
+  .search-box input::placeholder { color: #aeb4c4; }
+  .search-box .clear {
+    display: none; width: 24px; height: 24px; border-radius: 50%;
+    background: #eef0f3; color: #8a919f; font-size: 13px; line-height: 24px;
+    text-align: center; cursor: pointer; flex-shrink: 0;
+  }
+  .search-box.has-value .clear { display: block; }
+
+  .container { padding: 18px 20px 8px; max-width: 640px; margin: 0 auto; }
+
+  /* ── 快捷入口 ── */
+  .quick-title {
+    font-size: 15px; font-weight: 700; color: var(--text);
+    margin: 10px 6px 12px; display: flex; align-items: center;
+  }
+  .quick-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;
+    margin-bottom: 8px;
+  }
+  .quick-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    padding: 16px 6px; border-radius: 18px; cursor: pointer;
+    background: var(--card); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    box-shadow: var(--shadow); border: 1px solid rgba(255,255,255,0.7);
+    text-decoration: none; color: var(--text); transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .quick-item:active { transform: scale(0.96); }
+  .quick-item .qi-icon {
+    width: 42px; height: 42px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center; font-size: 21px;
+  }
+  .quick-item .qi-name { font-size: 12px; font-weight: 600; }
+
+  /* ── 分类标题 ── */
+  .section-title {
+    font-size: 15px; font-weight: 700; color: var(--text);
+    margin: 16px 6px 12px; display: flex; align-items: center;
+  }
+  .section-title .count {
+    font-size: 12px; color: var(--sub); font-weight: 400; margin-left: 8px;
+  }
+
+  /* ── 分类卡片 ── */
+  .category {
+    background: var(--card);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.7);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .category:active { transform: scale(0.99); }
+
+  .category-head {
+    display: flex; align-items: center;
+    padding: 18px 18px 16px;
+    cursor: pointer; user-select: none;
+  }
+  .cat-icon {
+    width: 50px; height: 50px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; flex-shrink: 0; margin-right: 14px;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  }
+  .cat-info { flex: 1; min-width: 0; }
+  .cat-name { font-size: 17px; font-weight: 700; }
+  .cat-desc { font-size: 12px; color: var(--sub); margin-top: 3px; }
+  .cat-count {
+    font-size: 11px; color: var(--sub); background: #f0f3f8;
+    padding: 2px 10px; border-radius: 20px; margin-right: 10px; white-space: nowrap;
+  }
+  .cat-arrow {
+    color: #c2c7cf; font-size: 14px; transition: transform 0.3s cubic-bezier(.4,0,.2,1);
+    display: inline-block;
+  }
+  .category.open .cat-arrow { transform: rotate(90deg); }
+
+  .cat-body { max-height: 0; overflow: hidden; transition: max-height 0.35s cubic-bezier(.4,0,.2,1); }
+  .category.open .cat-body { max-height: 1200px; }
+
+  .item {
+    display: flex; align-items: center;
+    padding: 14px 18px;
+    border-top: 1px solid rgba(238,240,243,0.8);
+    text-decoration: none; color: var(--text); cursor: pointer;
+    transition: background 0.15s;
+  }
+  .item:active { background: #f7f8fc; }
+  .item .dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 14px; flex-shrink: 0; }
+  .item-name { font-size: 14px; font-weight: 500; flex: 1; }
+  .item-tag {
+    font-size: 11px; padding: 3px 9px; border-radius: 20px;
+    background: #f0f3f8; color: var(--sub); margin-left: 8px; white-space: nowrap;
+  }
+  .item .arrow { color: #c2c7cf; font-size: 15px; margin-left: 10px; }
+
+  .empty { text-align: center; color: var(--sub); font-size: 13px; padding: 48px 0; }
+  .empty.hidden { display: none; }
+
+  /* ── 回到顶部 ── */
+  .back-top {
+    position: fixed; right: 18px; bottom: calc(24px + env(safe-area-inset-bottom));
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(79,124,255,0.92); color: #fff; font-size: 20px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 8px 20px rgba(79,124,255,0.35); cursor: pointer;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s, transform 0.25s;
+    z-index: 10; border: none;
+  }
+  .back-top.show { opacity: 1; pointer-events: auto; }
+  .back-top:active { transform: scale(0.92); }
+
+  .footer { text-align: center; color: #b4bac4; font-size: 12px; padding: 24px 16px calc(40px + env(safe-area-inset-bottom)); }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+    <div class="brand-tag">✦ 云图知行 · 员工服务</div>
+    <h1>员工手册导航</h1>
+    <div class="sub">常用事务一站自助 · 点击分类快速查看</div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-box" id="searchBox">
+      <span class="icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="搜索手册，如：社保、报销、请假、离职..." oninput="onSearch(this.value)">
+      <span class="clear" id="clearBtn" onclick="clearSearch()">✕</span>
+    </div>
+  </div>
+
+  <div class="container" id="container">
+    <div class="quick-title">常用入口</div>
+    <div class="quick-grid" id="quickGrid"></div>
+
+    <div class="section-title">全部手册<span class="count" id="totalCount"></span></div>
+    <div id="catList"></div>
+  </div>
+
+  <div class="empty hidden" id="emptyTip">未找到相关手册，换个关键词试试 🔎</div>
+  <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <div class="footer">如有疑问，请联系 HR 部门 · 云图知行</div>
+
+<script>
+  // ═══════════════════════════════════════════════════════════
+  //  【配置区】只需改这里 —— 把 url 换成你的真实语雀/企微链接
+  //
+  //  结构说明：
+  //  · quick   : 顶部「常用入口」快捷图标
+  //  · DATA    : 分类列表，每个分类含 items 子项
+  //  · 每个子项 { name 标题, tag 标签, url 链接 }
+  //
+  //  提示：语雀文档链接格式形如 https://xxx.yuque.com/xxx/xxx
+  //  ═══════════════════════════════════════════════════════════
+  const QUICK = [
+    { icon: '📋', name: '入职指南', grad: 'linear-gradient(135deg,#4f7cff,#6ea8ff)', url: 'https://maptech.yuque.com/zuvkp0/mx7goq/zn0uzswuaulhx385' },
+    { icon: '💰', name: '薪资查询', grad: 'linear-gradient(135deg,#7c5cff,#a78bff)', url: 'https://maptech.yuque.com/zuvkp0/mx7goq/cx8yimbmygn1re9s' },
+    { icon: '📅', name: '请假申请', grad: 'linear-gradient(135deg,#00b578,#3fd0a0)', url: 'https://maptech.yuque.com/zuvkp0/mx7goq/pb6nzb24hrxw059n' },
+    { icon: '💊', name: '补充医疗', grad: 'linear-gradient(135deg,#ff8f1f,#ffb14d)', url: 'https://example.com/quick-medical' },
+  ];
+
+  const DATA = [
+    {
+      id: 'onboard', name: '入职办理', icon: '🚀',
+      grad: 'linear-gradient(135deg,#4f7cff,#6ea8ff)',
+      desc: '报到 · 材料 · 办公账号 · 试用期',
+      items: [
+        { name: '入职报到流程', tag: '流程', url: 'https://example.com/onboard-flow' },
+        { name: '入职材料清单', tag: '材料', url: 'https://example.com/onboard-material' },
+        { name: '办公系统与账号开通', tag: '账号', url: 'https://example.com/onboard-account' },
+        { name: '试用期考核与转正', tag: '试用', url: 'https://example.com/onboard-probation' },
+        { name: '新员工引导手册', tag: '指南', url: 'https://example.com/onboard-guide' }
+      ]
+    },
+    {
+      id: 'salary', name: '薪酬与工资', icon: '💰',
+      grad: 'linear-gradient(135deg,#7c5cff,#a78bff)',
+      desc: '工资条 · 个税 · 绩效 · 薪资结构',
+      items: [
+        { name: '工资条查询', tag: '查询', url: 'https://example.com/salary-query' },
+        { name: '个税计算与专项附加扣除', tag: '个税', url: 'https://example.com/salary-tax' },
+        { name: '薪资结构与发放日', tag: '结构', url: 'https://example.com/salary-structure' },
+        { name: '绩效考核与奖金', tag: '绩效', url: 'https://example.com/salary-bonus' },
+        { name: '薪资异常申诉', tag: '申诉', url: 'https://example.com/salary-appeal' }
+      ]
+    },
+    {
+      id: 'attendance', name: '考勤与请假', icon: '📅',
+      grad: 'linear-gradient(135deg,#00b578,#3fd0a0)',
+      desc: '打卡 · 请假 · 加班 · 调休',
+      items: [
+        { name: '考勤打卡规则', tag: '规则', url: 'https://example.com/attend-rule' },
+        { name: '请假申请流程', tag: '请假', url: 'https://example.com/attend-leave' },
+        { name: '加班与调休申请', tag: '加班', url: 'https://example.com/attend-overtime' },
+        { name: '考勤异常申诉', tag: '申诉', url: 'https://example.com/attend-appeal' }
+      ]
+    },
+    {
+      id: 'social', name: '社保公积金', icon: '🏥',
+      grad: 'linear-gradient(135deg,#ff8f1f,#ffb14d)',
+      desc: '缴纳 · 查询 · 转移 · 公积金',
+      items: [
+        { name: '社保缴纳指南', tag: '指南', url: 'https://example.com/social-pay' },
+        { name: '社保个人账户查询', tag: '查询', url: 'https://example.com/social-query' },
+        { name: '社保转移接续', tag: '转移', url: 'https://example.com/social-transfer' },
+        { name: '社保增减员办理', tag: 'HR', url: 'https://example.com/social-change' },
+        { name: '公积金缴存与提取', tag: '公积金', url: 'https://example.com/social-fund' }
+      ]
+    },
+    {
+      id: 'benefit', name: '福利与补充医疗', icon: '💊',
+      grad: 'linear-gradient(135deg,#f0546c,#ff8f8f)',
+      desc: '补充医疗 · 体检 · 节日福利',
+      items: [
+        { name: '补充医疗报销流程', tag: '报销', url: 'https://example.com/benefit-reimburse' },
+        { name: '理赔材料清单', tag: '材料', url: 'https://example.com/benefit-claim' },
+        { name: '定点医院查询', tag: '医院', url: 'https://example.com/benefit-hospital' },
+        { name: '年度体检安排', tag: '体检', url: 'https://example.com/benefit-checkup' },
+        { name: '节日福利与礼品', tag: '福利', url: 'https://example.com/benefit-gift' }
+      ]
+    },
+    {
+      id: 'recruit', name: '招聘与 Moka', icon: '💻',
+      grad: 'linear-gradient(135deg,#00a8ff,#4fc3ff)',
+      desc: '内推 · Moka 系统 · 招聘流程',
+      items: [
+        { name: '内部推荐奖励', tag: '内推', url: 'https://example.com/recruit-referral' },
+        { name: 'Moka 账号登录与权限', tag: '入门', url: 'https://example.com/moka-login' },
+        { name: '简历筛选与操作', tag: '操作', url: 'https://example.com/moka-resume' },
+        { name: '招聘流程推进', tag: '流程', url: 'https://example.com/moka-flow' },
+        { name: '审批与报表导出', tag: '审批', url: 'https://example.com/moka-approve' }
+      ]
+    },
+    {
+      id: 'residence', name: '工作居住证', icon: '🏠',
+      grad: 'linear-gradient(135deg,#00b578,#3fd0a0)',
+      desc: '条件 · 材料 · 流程 · 续签',
+      items: [
+        { name: '办理条件与资格', tag: '条件', url: 'https://example.com/residence-qualify' },
+        { name: '材料清单与模板', tag: '材料', url: 'https://example.com/residence-material' },
+        { name: '办理流程详解', tag: '流程', url: 'https://example.com/residence-process' },
+        { name: '续签与变更', tag: '续签', url: 'https://example.com/residence-renew' }
+      ]
+    },
+    {
+      id: 'resign', name: '离职办理', icon: '👋',
+      grad: 'linear-gradient(135deg,#8a919f,#b0b7c3)',
+      desc: '离职 · 交接 · 证明 · 结算',
+      items: [
+        { name: '离职申请流程', tag: '流程', url: 'https://example.com/resign-flow' },
+        { name: '工作交接清单', tag: '交接', url: 'https://example.com/resign-handover' },
+        { name: '离职证明开具', tag: '证明', url: 'https://example.com/resign-cert' },
+        { name: '薪资与社保结算', tag: '结算', url: 'https://example.com/resign-settle' }
+      ]
+    },
+    {
+      id: 'policy', name: '制度与流程', icon: '📖',
+      grad: 'linear-gradient(135deg,#4f7cff,#7c5cff)',
+      desc: '员工手册 · 制度 · 常用流程',
+      items: [
+        { name: '员工手册（完整版）', tag: '手册', url: 'https://example.com/policy-handbook' },
+        { name: '公司规章制度', tag: '制度', url: 'https://example.com/policy-rule' },
+        { name: '常用审批流程', tag: '流程', url: 'https://example.com/policy-approval' },
+        { name: '印章与用印申请', tag: '用印', url: 'https://example.com/policy-seal' },
+        { name: '差旅与报销制度', tag: '报销', url: 'https://example.com/policy-travel' }
+      ]
+    }
+  ];
+
+  const catList = document.getElementById('catList');
+  const quickGrid = document.getElementById('quickGrid');
+  const emptyTip = document.getElementById('emptyTip');
+  const totalCount = document.getElementById('totalCount');
+  const backTop = document.getElementById('backTop');
+
+  function renderQuick() {
+    quickGrid.innerHTML = QUICK.map(q => `
+      <a class="quick-item" href="${q.url}" target="_blank" rel="noopener">
+        <span class="qi-icon" style="background:${q.grad}">${q.icon}</span>
+        <span class="qi-name">${q.name}</span>
+      </a>
+    `).join('');
+  }
+
+  function render(list) {
+    totalCount.textContent = '(' + list.reduce((s, c) => s + c.items.length, 0) + '项)';
+
+    if (list.length === 0) { catList.innerHTML = ''; emptyTip.classList.remove('hidden'); return; }
+    emptyTip.classList.add('hidden');
+
+    catList.innerHTML = list.map(cat => `
+      <div class="category">
+        <div class="category-head" onclick="toggleCat(this.parentElement)">
+          <div class="cat-icon" style="background:${cat.grad}">${cat.icon}</div>
+          <div class="cat-info">
+            <div class="cat-name">${cat.name}</div>
+            <div class="cat-desc">${cat.desc}</div>
+          </div>
+          <span class="cat-count">${cat.items.length}项</span>
+          <span class="cat-arrow">▶</span>
+        </div>
+        <div class="cat-body">
+          ${cat.items.map(it => `
+            <a class="item" href="${it.url}" target="_blank" rel="noopener">
+              <span class="dot" style="background:${cat.grad}"></span>
+              <span class="item-name">${it.name}</span>
+              <span class="item-tag">${it.tag}</span>
+              <span class="arrow">›</span>
+            </a>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function toggleCat(el) { el.classList.toggle('open'); }
+
+  function onSearch(kw) {
+    kw = kw.trim().toLowerCase();
+    const box = document.getElementById('searchBox');
+    box.classList.toggle('has-value', !!kw);
+    if (!kw) { render(DATA); return; }
+    const filtered = DATA.map(cat => {
+      const items = cat.items.filter(it =>
+        it.name.toLowerCase().includes(kw) ||
+        it.tag.toLowerCase().includes(kw) ||
+        cat.name.toLowerCase().includes(kw)
+      );
+      return items.length ? { ...cat, items } : null;
+    }).filter(Boolean);
+    render(filtered);
+    // 搜索时自动展开所有结果
+    document.querySelectorAll('.category').forEach(c => c.classList.add('open'));
+  }
+
+  function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    onSearch('');
+  }
+
+  // 回到顶部按钮显隐
+  window.addEventListener('scroll', () => {
+    backTop.classList.toggle('show', window.scrollY > 400);
+  }, { passive: true });
+
+  renderQuick();
+  render(DATA);
+</script>
+</body>
+</html>
